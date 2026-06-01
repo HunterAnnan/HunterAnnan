@@ -1,5 +1,3 @@
-## Hi there 👋
-
 <!--
 **HunterAnnan/HunterAnnan** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
@@ -14,3 +12,8 @@ Here are some ideas to get you started:
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ...
 -->
+
+# Hi, I'm Hunter!
+
+🏃 **Today's Steps:** 0 | 🧗 **Floors Climbed:** 0
+Other cool things about me...
