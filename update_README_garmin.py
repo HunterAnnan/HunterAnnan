@@ -74,10 +74,13 @@ def update_readme(readme_filepath, new_content: dict):
     start_tag = "<!-- GARMIN_STATS:START -->"
     end_tag = "<!-- GARMIN_STATS:END -->"
     
+    training_effect = new_content.get("training_effect", "")
+    training_effect_str = f", focusing on {training_effect}" if training_effect else ""
+
     # if last_activity_type, last_activity_location, and last_activity_date are in new_content:
     if all(key in new_content for key in ["last_activity_type", "last_activity_location", "last_activity_date"]):
         content_last_activity = f"## Latest updates from Garmin\n" \
-            f"I last went {new_content["last_activity_type"]} {new_content["last_activity_date"]}, in {new_content["last_activity_location"]}."
+            f"I last went {new_content['last_activity_type']} {new_content['last_activity_date']}, in {new_content['last_activity_location']}{training_effect_str}."
     else:
         content_last_activity = ""
         
@@ -129,11 +132,24 @@ if __name__ == "__main__":
     else:
         last_activity_date = "on " + last_activity_date
 
+    TRAINING_EFFECT_MAP = {
+        "RECOVERY": "recovery",
+        "VO2MAX": "VO2 Max",
+        "ANAEROBIC_CAPACITY": "anaerobic capacity",
+        "BASE": "base training",
+        "TEMPO": "tempo",
+        "THRESHOLD": "threshold",
+        "SPRINT": "sprint",
+    }
+    
+    label = last_activity.get("trainingEffectLabel", "")
+    training_effect = TRAINING_EFFECT_MAP.get(label, label.replace("_", " ").title())
 
     new_content = {
         "last_activity_type": last_activity["activityType"]["typeKey"],
         "last_activity_location": last_activity["locationName"],
         "last_activity_date": last_activity_date,
+        "training_effect": training_effect,
     }
 
     update_readme(readme, new_content)

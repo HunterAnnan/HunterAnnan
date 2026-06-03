@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Latest updates from Garmin
-I last went running yesterday, in Toscolano Maderno.
+I last went running yesterday, in Toscolano Maderno, focusing on tempo.
 <!-- GARMIN_STATS:END -->
 
 ![Garmin Stats](garmin_stats_graph.png)
