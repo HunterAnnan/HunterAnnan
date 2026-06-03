@@ -15,11 +15,11 @@ class GarminConnector():
     def connect(self):
         print("Connecting to Garmin...")
         
-        # email = os.getenv("GARMIN_EMAIL")
-        # password = os.getenv("GARMIN_PASSWORD")
+        garmin_email = os.getenv("GARMIN_EMAIL") or email
+        garmin_password = os.getenv("GARMIN_PASSWORD") or password
         
         try:
-            client = Garmin(email, password)
+            client = Garmin(garmin_email, garmin_password)
             client.login()
             return client
         except Exception as e:

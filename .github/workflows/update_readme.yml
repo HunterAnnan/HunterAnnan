@@ -1,0 +1,39 @@
+name: Update Garmin Stats
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install garminconnect matplotlib
+
+      - name: Update README and Graphs
+        env:
+          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+        run: |
+          # Create a dummy credentials file to satisfy the import if it's missing
+          echo "email = ''" > temp_credentials.py
+          echo "password = ''" >> temp_credentials.py
+          python update_README_garmin.py
+
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update Garmin stats and graphs"
+          file_pattern: "README.md *.png"
