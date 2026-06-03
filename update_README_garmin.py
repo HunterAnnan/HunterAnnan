@@ -1,11 +1,12 @@
 from garminconnect import Garmin
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from temp_credentials import email, password
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as mticker
 import itertools
 import os
+from collections import Counter
 
 class GarminConnector():
     def __init__(self):
@@ -42,32 +43,73 @@ class GarminConnector():
             print(f"Failed to fetch stats: {e}")
             return None
 
-def generate_graph(stats, output_path):
-    print(f"Generating graph at {output_path}...")
-    dates = [date.fromisoformat(s['calendarDate']) for s in stats if s]
-    steps = [s.get('totalSteps', 0) for s in stats if s]
-    cumulative_steps = list(itertools.accumulate(steps))
+    def get_yearly_activities(self):
+        if not self.client:
+            return []
+        print("Fetching yearly activities from Garmin...")
+        activities = []
+        start = 0
+        limit = 50
+        today = date.today()
+        start_of_year = date(today.year, 1, 1)
+        
+        while True:
+            batch = self.client.get_activities(start, limit)
+            if not batch:
+                break
+            
+            for a in batch:
+                a_date = datetime.strptime(a['startTimeLocal'], '%Y-%m-%d %H:%M:%S').date()
+                if a_date >= start_of_year:
+                    activities.append(a)
+                else:
+                    return activities
+            
+            start += limit
+            if start > 500: # Safety break
+                break
+        return activities
 
+def generate_total_count_graph(date_range, count_per_day, output_path):
+    print(f"Generating total count graph at {output_path}...")
+    total_cumulative_count = list(itertools.accumulate(count_per_day))
+    
     plt.xkcd()
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(dates, cumulative_steps)
+    
+    ax.bar(date_range, total_cumulative_count, color='black', label='Total Activities')
+    ax.set_ylabel('Activities')
+    ax.set_title('Activities this Year')
+    
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    
+    fig.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
 
-    # Format the y-axis to show millions with an "M" suffix
-    def millions_formatter(x, pos):
-        return f'{x*1e-6:.1f}M'
-    ax.yaxis.set_major_formatter(mticker.FuncFormatter(millions_formatter))
+def generate_category_duration_graph(date_range, categories, cumulative_data, output_path):
+    print(f"Generating category duration graph at {output_path}...")
+    plt.xkcd()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    colors = plt.get_cmap('tab10').colors
 
-    # Format the x-axis to show abbreviated month names
+    def hours_formatter(x, pos):
+        return f'{int(x)}h'
+
+    for i, cat in enumerate(categories):
+        ax.plot(date_range, cumulative_data[cat], label=cat.replace('_', ' ').title(), color=colors[i % len(colors)], linewidth=2)
+        
+    ax.legend(loc='upper left')
+    ax.set_ylabel('Cumulative Hours')
+    ax.set_title('Hours split by Activity')
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(hours_formatter))
     ax.xaxis.set_major_locator(mdates.MonthLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
-    # Set axis labels and title
-    ax.set_ylabel('Steps')
-    ax.set_title(f'Cumulative Steps for {date.today().year}')
-
     fig.tight_layout()
     plt.savefig(output_path)
-    print("Graph saved successfully!")
+    plt.close()
 
 def update_readme(readme_filepath, new_content: dict):
     print("Creating README.md with Garmin stats...")
@@ -103,56 +145,89 @@ def update_readme(readme_filepath, new_content: dict):
         
 if __name__ == "__main__":
     readme = "README.md"
+    total_count_path = "garmin_total_count_graph.png"
+    category_duration_path = "garmin_category_duration_graph.png"
 
     garmin_connection = GarminConnector()
-    # stats = garmin_connection.get_yearly_stats()
-
-    # if stats:
-    #     generate_graph(stats, graph_path)
+    
+    # Fetch all activities for the year
+    activities = garmin_connection.get_yearly_activities()
+    if activities:
+        # Group activities by type and identify top 4
+        all_types = [a['activityType']['typeKey'] for a in activities]
+        counts = Counter(all_types)
+        top_4_types = [t for t, c in counts.most_common(4)]
+        
+        today = date.today()
+        start_of_year = date(today.year, 1, 1)
+        date_range = [start_of_year + timedelta(days=i) for i in range((today - start_of_year).days + 1)]
+        
+        categories = top_4_types + ["Other"]
+        duration_per_day = {cat: [0.0] * len(date_range) for cat in categories}
+        count_per_day = [0] * len(date_range)
+        
+        for activity in activities:
+            act_date = datetime.strptime(activity['startTimeLocal'], '%Y-%m-%d %H:%M:%S').date()
+            if act_date < start_of_year:
+                continue
+            
+            day_idx = (act_date - start_of_year).days
+            if day_idx >= len(date_range):
+                continue
+                
+            act_type = activity['activityType']['typeKey']
+            cat = act_type if act_type in top_4_types else "Other"
+            
+            duration_per_day[cat][day_idx] += activity.get('duration', 0) / 3600.0
+            count_per_day[day_idx] += 1
+            
+        cumulative_duration = {cat: list(itertools.accumulate(duration_per_day[cat])) for cat in categories}
+        
+        generate_total_count_graph(date_range, count_per_day, total_count_path)
+        generate_category_duration_graph(date_range, categories, cumulative_duration, category_duration_path)
     
     today = date.today()
     yesterday = (date.today() - timedelta(days=1))
-    start_of_last_week = (date.today() - timedelta(days=7))
     
-    last_activity = garmin_connection.client.get_last_activity()
-    
-    # test = garmin_connection.client.get_activities(start=20)
-    # import json
-    # with open("garmin_activities.json", "w", encoding="utf-8") as f:
-    #     json.dump(test, f, indent=4)
-    
-
-    # Activity date
-    last_activity_date_raw = last_activity["startTimeLocal"].split(" ")[0]
-    last_activity_date = date.fromisoformat(last_activity_date_raw).strftime("%-d %B %Y")
-    if last_activity_date == today.strftime("%-d %B %Y"):
-        last_activity_date = "today"
-    elif last_activity_date == yesterday.strftime("%-d %B %Y"):
-        last_activity_date = "yesterday"
+    # Get the single last activity for the README text
+    if activities:
+        last_activity = activities[0] # Activities are usually returned newest first
     else:
-        last_activity_date = "on " + last_activity_date
-
-    TRAINING_EFFECT_MAP = {
-        "RECOVERY": "recovery",
-        "VO2MAX": "VO2 Max",
-        "ANAEROBIC_CAPACITY": "anaerobic capacity",
-        "BASE": "base training",
-        "TEMPO": "tempo",
-        "THRESHOLD": "threshold",
-        "SPRINT": "sprint",
-    }
+        last_activity = garmin_connection.client.get_last_activity()
     
-    label = last_activity.get("trainingEffectLabel", "")
-    training_effect = TRAINING_EFFECT_MAP.get(label, label.replace("_", " ").title())
+    if last_activity:
+        # Activity date
+        last_activity_date_raw = last_activity["startTimeLocal"].split(" ")[0]
+        last_activity_date_dt = datetime.strptime(last_activity_date_raw, "%Y-%m-%d").date()
+        
+        if last_activity_date_dt == today:
+            last_activity_date = "today"
+        elif last_activity_date_dt == yesterday:
+            last_activity_date = "yesterday"
+        else:
+            last_activity_date = "on " + last_activity_date_dt.strftime("%-d %B %Y")
 
-    new_content = {
-        "last_activity_type": last_activity["activityType"]["typeKey"],
-        "last_activity_location": last_activity["locationName"],
-        "last_activity_date": last_activity_date,
-        "training_effect": training_effect,
-    }
+        TRAINING_EFFECT_MAP = {
+            "RECOVERY": "recovery",
+            "VO2MAX": "VO2 Max",
+            "ANAEROBIC_CAPACITY": "anaerobic capacity",
+            "BASE": "base training",
+            "TEMPO": "tempo",
+            "THRESHOLD": "threshold",
+            "SPRINT": "sprint",
+        }
+        
+        label = last_activity.get("trainingEffectLabel", "")
+        training_effect = TRAINING_EFFECT_MAP.get(label, label.replace("_", " ").title())
 
-    update_readme(readme, new_content)
+        new_content = {
+            "last_activity_type": last_activity["activityType"]["typeKey"],
+            "last_activity_location": last_activity["locationName"],
+            "last_activity_date": last_activity_date,
+            "training_effect": training_effect,
+        }
+
+        update_readme(readme, new_content)
     
 
     

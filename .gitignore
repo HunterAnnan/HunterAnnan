@@ -2,5 +2,4 @@ __pycache__/*
 temp_*
 .gemini/settings.json
 .DS_Store
-*.png
 garmin_activities.json

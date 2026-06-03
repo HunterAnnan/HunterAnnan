@@ -5,4 +5,5 @@
 I last went running yesterday, in Toscolano Maderno, focusing on tempo.
 <!-- GARMIN_STATS:END -->
 
-![Garmin Stats](garmin_stats_graph.png)
+![Garmin Total Count](garmin_total_count_graph.png)
+![Garmin Category Duration](garmin_category_duration_graph.png)
