@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Latest updates from Garmin
-I last went road_biking yesterday, in Hammersmith and Fulham, focusing on tempo.
+I last went road_biking on 14 June 2026, in Hammersmith and Fulham, focusing on tempo.
 <!-- GARMIN_STATS:END -->
 
 ![Garmin Stats](garmin_stats.png)
