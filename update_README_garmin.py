@@ -73,30 +73,22 @@ class GarminConnector():
 def generate_combined_graph(date_range, count_per_day, categories, cumulative_duration, output_path):
     print(f"Generating combined graph at {output_path}...")
     plt.xkcd()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+    fig, ax = plt.subplots(figsize=(16, 6))
     colors = plt.get_cmap('tab10').colors
 
-    # Graph 1: Total Count
-    total_cumulative_count = list(itertools.accumulate(count_per_day))
-    ax1.bar(date_range, total_cumulative_count, color='black')
-    ax1.set_ylabel('Activities')
-    ax1.set_title('Activities this Year')
-    ax1.xaxis.set_major_locator(mdates.MonthLocator())
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-
-    # Graph 2: Category Duration
+    # Category Duration Graph
     def hours_formatter(x, pos):
         return f'{int(x)}h'
 
     for i, cat in enumerate(categories):
-        ax2.plot(date_range, cumulative_duration[cat], label=cat.replace('_', ' ').title(), color=colors[i % len(colors)], linewidth=2)
+        ax.plot(date_range, cumulative_duration[cat], label=cat.replace('_', ' ').title(), color=colors[i % len(colors)], linewidth=2)
         
-    ax2.legend(loc='upper left')
-    ax2.set_ylabel('Cumulative Hours')
-    ax2.set_title('Hours split by Activity')
-    ax2.yaxis.set_major_formatter(mticker.FuncFormatter(hours_formatter))
-    ax2.xaxis.set_major_locator(mdates.MonthLocator())
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    ax.legend(loc='upper left')
+    ax.set_ylabel('Cumulative Hours')
+    ax.set_title('Hours split by Activity')
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(hours_formatter))
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
 
     fig.tight_layout()
     plt.savefig(output_path)
