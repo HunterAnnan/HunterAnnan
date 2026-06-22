@@ -144,7 +144,7 @@ if __name__ == "__main__":
     activities = garmin_connection.get_yearly_activities()
     if activities:
         # Group activities by type and identify top 4
-        all_types = [a['activityType']['typeKey'] for a in activities]
+        all_types = ['cycling' if a['activityType']['typeKey'] == 'road_biking' else a['activityType']['typeKey'] for a in activities]
         counts = Counter(all_types)
         top_4_types = [t for t, c in counts.most_common(4)]
         
@@ -166,6 +166,8 @@ if __name__ == "__main__":
                 continue
                 
             act_type = activity['activityType']['typeKey']
+            if act_type == 'road_biking':
+                act_type = 'cycling'
             cat = act_type if act_type in top_4_types else "Other"
             
             duration_per_day[cat][day_idx] += activity.get('duration', 0) / 3600.0
