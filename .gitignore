@@ -3,3 +3,4 @@ temp_*
 .gemini/settings.json
 .DS_Store
 garmin_activities.json
+garmin_stats.png

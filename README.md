@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Latest updates from Garmin
-I last went running yesterday, in Toscolano Maderno, focusing on tempo.
+I last went walking yesterday, in Hammersmith and Fulham.
 <!-- GARMIN_STATS:END -->
 
 ![Garmin Stats](garmin_stats.png)

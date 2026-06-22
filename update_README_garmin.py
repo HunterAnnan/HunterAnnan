@@ -108,12 +108,12 @@ def update_readme(readme_filepath, new_content: dict):
     end_tag = "<!-- GARMIN_STATS:END -->"
     
     training_effect = new_content.get("training_effect", "")
-    training_effect_str = f", focusing on {training_effect}" if training_effect else ""
+    training_effect_str = f", focusing on {training_effect}" if training_effect and training_effect.upper() != "UNKNOWN" else ""
 
     # if last_activity_type, last_activity_location, and last_activity_date are in new_content:
     if all(key in new_content for key in ["last_activity_type", "last_activity_location", "last_activity_date"]):
         content_last_activity = f"## Latest updates from Garmin\n" \
-            f"I last went {new_content['last_activity_type']} {new_content['last_activity_date']}, in {new_content['last_activity_location']}{training_effect_str}."
+            f"I last went {new_content['last_activity_type'].replace('_', ' ')} {new_content['last_activity_date']}, in {new_content['last_activity_location']}{training_effect_str}."
     else:
         content_last_activity = ""
         
@@ -198,11 +198,11 @@ if __name__ == "__main__":
 
         TRAINING_EFFECT_MAP = {
             "RECOVERY": "recovery",
+            "AEROBIC_BASE": "base training",
+            "TEMPO": "tempo",
+            "LACTATE_THRESHOLD": "threshold",
             "VO2MAX": "VO2 Max",
             "ANAEROBIC_CAPACITY": "anaerobic capacity",
-            "BASE": "base training",
-            "TEMPO": "tempo",
-            "THRESHOLD": "threshold",
             "SPRINT": "sprint",
         }
         
