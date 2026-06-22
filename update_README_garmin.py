@@ -102,10 +102,25 @@ def update_readme(readme_filepath, new_content: dict):
     training_effect = new_content.get("training_effect", "")
     training_effect_str = f", focusing on {training_effect}" if training_effect and training_effect.upper() != "UNKNOWN" else ""
 
-    # if last_activity_type, last_activity_location, and last_activity_date are in new_content:
     if all(key in new_content for key in ["last_activity_type", "last_activity_location", "last_activity_date"]):
-        content_last_activity = f"## Latest updates from Garmin\n" \
-            f"I last went {new_content['last_activity_type'].replace('_', ' ')} {new_content['last_activity_date']}, in {new_content['last_activity_location']}{training_effect_str}."
+        moving_duration = new_content.get("moving_duration")
+        if moving_duration is not None:
+            total_minutes = round(moving_duration / 60)
+            hours = total_minutes // 60
+            minutes = total_minutes % 60
+            if hours == 0:
+                duration_str = f"{minutes}m"
+            else:
+                duration_str = f"{hours}h {minutes}m"
+        else:
+            duration_str = ""
+
+        average_hr_val = new_content.get("average_hr")
+        average_hr_str = str(int(round(average_hr_val))) if average_hr_val is not None else ""
+
+        line1 = f"I last went {new_content['last_activity_type'].replace('_', ' ')} {new_content['last_activity_date']} in {new_content['last_activity_location']}."
+        line2 = f"I was active for {duration_str}{training_effect_str}, and had an average heart rate of {average_hr_str}."
+        content_last_activity = f"## My latest Garmin activity\n{line1}\n{line2}"
     else:
         content_last_activity = ""
         
@@ -192,12 +207,12 @@ if __name__ == "__main__":
 
         TRAINING_EFFECT_MAP = {
             "RECOVERY": "recovery",
-            "AEROBIC_BASE": "base training",
-            "TEMPO": "tempo",
-            "LACTATE_THRESHOLD": "threshold",
-            "VO2MAX": "VO2 Max",
-            "ANAEROBIC_CAPACITY": "anaerobic capacity",
-            "SPRINT": "sprint",
+            "AEROBIC_BASE": "aerobic base training",
+            "TEMPO": "tempo training",
+            "LACTATE_THRESHOLD": "threshold power",
+            "VO2MAX": "VO2 max",
+            "ANAEROBIC_CAPACITY": "improving anaerobic capacity",
+            "SPRINT": "sprints",
         }
         
         label = last_activity.get("trainingEffectLabel", "")
@@ -208,6 +223,8 @@ if __name__ == "__main__":
             "last_activity_location": last_activity["locationName"],
             "last_activity_date": last_activity_date,
             "training_effect": training_effect,
+            "moving_duration": last_activity.get("movingDuration"),
+            "average_hr": last_activity.get("averageHR"),
         }
 
         update_readme(readme, new_content)
