@@ -94,6 +94,55 @@ def generate_combined_graph(date_range, count_per_day, categories, cumulative_du
     plt.savefig(output_path)
     plt.close()
 
+def generate_hr_zones_graph(last_activity, output_path):
+    print(f"Generating HR zones graph at {output_path}...")
+    
+    raw_times_1_5 = [last_activity.get(f"hrTimeInZone_{i}", 0.0) or 0.0 for i in range(1, 6)]
+    zones_1_5_time = sum(raw_times_1_5)
+    total_duration = last_activity.get("duration", 0.0) or 0.0
+    zone_0_time = max(0.0, total_duration - zones_1_5_time)
+    
+    all_times = [zone_0_time] + raw_times_1_5
+    total_time = sum(all_times)
+    
+    if total_time > 0:
+        percentages = [t / total_time * 100 for t in all_times]
+    else:
+        percentages = [0.0] * 6
+        
+    colors = ['#D3D3D3', '#9E9E9E', '#2196F3', '#4CAF50', '#FF9800', '#F44336']
+    # Heights grow taller as the zone number increases (Z0 -> Z5)
+    heights = [0.15, 0.3, 0.5, 0.7, 0.9, 1.1]
+    
+    plt.xkcd()
+    fig, ax = plt.subplots(figsize=(16, 2.2))
+    left = 0
+    last_label_x = -999.0
+    min_distance = 5.0  # Minimum percentage distance between labels to prevent overlapping
+    
+    for i, (pct, color, h) in enumerate(zip(percentages, colors, heights)):
+        if pct > 0:
+            ax.barh(h/2, pct, left=left, height=h, color=color, edgecolor='black', linewidth=1.5)
+            # Center of the current segment
+            label_x = left + pct / 2
+            # Suppress label if the segment is too small or overlaps with the previous label
+            if pct >= 5.0 and (label_x - last_label_x) >= min_distance:
+                # Add label below the bar (below y=0)
+                ax.text(label_x, -0.1, f"Zone {i}\n{pct:.1f}%", ha='center', va='top', color='black', fontsize=9, fontweight='bold')
+                last_label_x = label_x
+            left += pct
+            
+    ax.set_xlim(0, 100)
+    ax.set_ylim(-0.6, 1.3) # Leave space below y=0 for the labels
+    ax.set_yticks([])
+    ax.set_xticks([])
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+        
+    fig.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
+
 def update_readme(readme_filepath, new_content: dict):
     print("Creating README.md with Garmin stats...")
     start_tag = "<!-- GARMIN_STATS:START -->"
@@ -120,7 +169,10 @@ def update_readme(readme_filepath, new_content: dict):
 
         line1 = f"I last went {new_content['last_activity_type'].replace('_', ' ')} {new_content['last_activity_date']} in {new_content['last_activity_location']}."
         line2 = f"I was active for {duration_str}{training_effect_str}, and had an average heart rate of {average_hr_str}."
-        content_last_activity = f"## My latest Garmin activity\n{line1}\n{line2}"
+        
+        show_hr_zones = new_content.get("show_hr_zones", True)
+        hr_zones_str = "\n\n![Latest HR Zones](latest_hr_zones.png)" if show_hr_zones else ""
+        content_last_activity = f"## Here's my last-logged Garmin activity\n{line1}\n{line2}{hr_zones_str}"
     else:
         content_last_activity = ""
         
@@ -144,6 +196,7 @@ def update_readme(readme_filepath, new_content: dict):
 if __name__ == "__main__":
     readme = "README.md"
     stats_path = "garmin_stats.png"
+    hr_zones_path = "latest_hr_zones.png"
 
     garmin_connection = GarminConnector()
     
@@ -218,6 +271,9 @@ if __name__ == "__main__":
         label = last_activity.get("trainingEffectLabel", "")
         training_effect = TRAINING_EFFECT_MAP.get(label, label.replace("_", " ").title())
 
+        zones_1_5_time = sum(last_activity.get(f"hrTimeInZone_{i}", 0.0) or 0.0 for i in range(1, 6))
+        show_hr_zones = zones_1_5_time > 0
+
         new_content = {
             "last_activity_type": last_activity["activityType"]["typeKey"],
             "last_activity_location": last_activity["locationName"],
@@ -225,6 +281,15 @@ if __name__ == "__main__":
             "training_effect": training_effect,
             "moving_duration": last_activity.get("movingDuration"),
             "average_hr": last_activity.get("averageHR"),
+            "show_hr_zones": show_hr_zones,
         }
 
+        if show_hr_zones:
+            generate_hr_zones_graph(last_activity, hr_zones_path)
+        else:
+            if os.path.exists(hr_zones_path):
+                try:
+                    os.remove(hr_zones_path)
+                except OSError:
+                    pass
         update_readme(readme, new_content)

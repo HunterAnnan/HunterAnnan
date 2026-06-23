@@ -1,10 +1,10 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-## My latest Garmin activity
-I last went road biking on 21 June 2026 in Hammersmith and Fulham.
-I was active for 1h 59m, focusing on threshold, and had an average heart rate of 167.
+## Here what I last recorded on Garmin
+I last went walking yesterday in Hammersmith and Fulham.
+I was active for 15m, and had an average heart rate of 100.
 <!-- GARMIN_STATS:END -->
 
-## Here's what I've logged with Garmin this year
+## ... and the activities I've logged so far this year
 ![Garmin Stats](garmin_stats.png)
