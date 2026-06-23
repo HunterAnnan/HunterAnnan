@@ -2,8 +2,10 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went walking yesterday in Hammersmith and Fulham.
-I was active for 15m, and had an average heart rate of 100.
+I last went running today in Hammersmith and Fulham.
+I was active for 30m, focusing on tempo training, and had an average heart rate of 170.
+
+![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
 
 ## ... and the activities I've logged so far this year
