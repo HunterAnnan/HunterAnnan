@@ -2,8 +2,8 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went cycling yesterday in Tavira.
-I was active for 2h 21m, focusing on aerobic base training, and had an average heart rate of 125.
+I last went open water swimming yesterday in Tavira.
+I was active for 12m, focusing on recovery, and had an average heart rate of 96.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
