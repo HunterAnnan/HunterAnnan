@@ -2,8 +2,8 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went cycling yesterday in Hammersmith and Fulham.
-I was active for 11m, focusing on recovery, and had an average heart rate of 125.
+I last went road biking yesterday in Hammersmith and Fulham.
+I was active for 50m, focusing on threshold power, and had an average heart rate of 170.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
