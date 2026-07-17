@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went road biking yesterday in Hammersmith and Fulham.
+I last went road biking on 15 July 2026 in Hammersmith and Fulham.
 I was active for 50m, focusing on threshold power, and had an average heart rate of 170.
 
 ![Latest HR Zones](latest_hr_zones.png)
