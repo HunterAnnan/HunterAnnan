@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went cycling yesterday in Cotswold.
+I last went cycling on 18 July 2026 in Cotswold.
 I was active for 37m, focusing on aerobic base training, and had an average heart rate of 132.
 
 ![Latest HR Zones](latest_hr_zones.png)
