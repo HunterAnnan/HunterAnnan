@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went running yesterday in Hammersmith and Fulham.
+I last went running on 20 July 2026 in Hammersmith and Fulham.
 I was active for 35m, focusing on threshold power, and had an average heart rate of 168.
 
 ![Latest HR Zones](latest_hr_zones.png)
