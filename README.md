@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went hiking yesterday in Stroud.
+I last went hiking on 31 August 2026 in Stroud.
 I was active for 1h 18m, focusing on recovery, and had an average heart rate of 86.
 
 ![Latest HR Zones](latest_hr_zones.png)
