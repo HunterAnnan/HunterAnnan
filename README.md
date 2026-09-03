@@ -2,8 +2,8 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went hiking on 31 August 2026 in Stroud.
-I was active for 1h 18m, focusing on recovery, and had an average heart rate of 86.
+I last went cycling yesterday in Hammersmith and Fulham.
+I was active for 15m, focusing on tempo training, and had an average heart rate of 135.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
