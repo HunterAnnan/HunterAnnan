@@ -2,7 +2,7 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went running yesterday in Islington.
+I last went running on 12 September 2026 in Islington.
 I was active for 22m, focusing on VO2 max, and had an average heart rate of 188.
 
 ![Latest HR Zones](latest_hr_zones.png)
