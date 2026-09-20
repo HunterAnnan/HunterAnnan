@@ -2,8 +2,8 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went running on 12 September 2026 in Islington.
-I was active for 22m, focusing on VO2 max, and had an average heart rate of 188.
+I last went cycling yesterday in Hammersmith and Fulham.
+I was active for 6m, focusing on recovery, and had an average heart rate of 125.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
