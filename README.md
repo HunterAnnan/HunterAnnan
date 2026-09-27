@@ -2,8 +2,8 @@
 
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
-I last went cycling on 19 September 2026 in Hammersmith and Fulham.
-I was active for 6m, focusing on recovery, and had an average heart rate of 125.
+I last went road biking yesterday in Hammersmith and Fulham.
+I was active for 1h 9m, focusing on threshold power, and had an average heart rate of 163.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
