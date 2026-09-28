@@ -3,7 +3,7 @@
 <!-- GARMIN_STATS:START -->
 ## Here what I last recorded on Garmin
 I last went road biking yesterday in Hammersmith and Fulham.
-I was active for 1h 9m, focusing on threshold power, and had an average heart rate of 163.
+I was active for 1h 14m, focusing on VO2 max, and had an average heart rate of 169.
 
 ![Latest HR Zones](latest_hr_zones.png)
 <!-- GARMIN_STATS:END -->
