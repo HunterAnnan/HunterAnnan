@@ -31,24 +31,26 @@ CATEGORY_MAP = {
     "road_biking": "cycling",
 }
 
-# Chart category / typeKey -> noun used in "My last activity was a ...".
-ACTIVITY_NOUNS = {
-    "running": "run",
-    "trail_running": "trail run",
-    "treadmill_running": "treadmill run",
-    "walking": "walk",
-    "hiking": "hike",
-    "cycling": "ride",
-    "road_biking": "ride",
-    "mountain_biking": "ride",
-    "gravel_cycling": "ride",
-    "indoor_cycling": "indoor ride",
-    "lap_swimming": "swim",
-    "open_water_swimming": "swim",
-    "swimming": "swim",
-    "strength_training": "strength session",
-    "yoga": "yoga session",
-    "pilates": "pilates session",
+# typeKey -> phrase used in "I last {phrase} {day}."
+ACTIVITY_PHRASES = {
+    "running": "went for a run",
+    "trail_running": "went for a trail run",
+    "treadmill_running": "did a treadmill run",
+    "walking": "went for a walk",
+    "casual_walking": "went for a walk",
+    "speed_walking": "went for a walk",
+    "hiking": "went for a hike",
+    "cycling": "went for a bike ride",
+    "road_biking": "went for a bike ride",
+    "mountain_biking": "went for a bike ride",
+    "gravel_cycling": "went for a bike ride",
+    "indoor_cycling": "did an indoor cycle",
+    "lap_swimming": "went for a swim",
+    "open_water_swimming": "went for a swim",
+    "swimming": "went for a swim",
+    "strength_training": "did a strength session",
+    "yoga": "did a yoga session",
+    "pilates": "did a pilates session",
 }
 
 
@@ -110,11 +112,11 @@ def generate_graph(activities, output_path):
     days = (today - start_of_year).days + 1
     date_range = [start_of_year + timedelta(days=i) for i in range(days)]
 
-    # Top 5 categories by count (+ "other" = 6 lines).
+    # Top 7 categories by count (+ "other" = 8 lines).
     counts = {}
     for a in activities:
         counts[category_of(a)] = counts.get(category_of(a), 0) + 1
-    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:5]]
+    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:7]]
     categories = top + ["other"]
 
     per_day = {cat: [0.0] * days for cat in categories}
@@ -144,10 +146,12 @@ def generate_graph(activities, output_path):
 
 
 def describe_last_activity(activity):
-    """Builds e.g. 'My last activity was a run yesterday.'"""
+    """Builds e.g. 'I last went for a run yesterday.'"""
     key = (activity.get("activityType") or {}).get("typeKey") or ""
-    noun = ACTIVITY_NOUNS.get(key) or key.replace("_", " ") or "activity"
-    article = "an" if noun[0] in "aeiou" else "a"
+    phrase = ACTIVITY_PHRASES.get(key)
+    if not phrase:
+        # Unmapped type: still reads fine, e.g. "did some rowing".
+        phrase = f"did some {key.replace('_', ' ')}" if key else "did an activity"
 
     when = parse_start(activity).date()
     today = date.today()
@@ -157,7 +161,7 @@ def describe_last_activity(activity):
         when_str = "yesterday"
     else:
         when_str = f"on {when.day} {when.strftime('%B %Y')}"
-    return f"My last activity was {article} {noun} {when_str}."
+    return f"I last {phrase} {when_str}."
 
 
 def update_readme(readme_path, statement):
