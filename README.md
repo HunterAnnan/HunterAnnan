@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-My last activity was a run on 12 October 2026.
+My last activity was a strength session yesterday.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
