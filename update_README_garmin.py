@@ -65,6 +65,12 @@ def category_of(activity):
     # Catches walking, casual_walking, speed_walking, hiking, etc.
     if "walking" in key or "hiking" in key:
         return "hiking_walking"
+    # Catches cycling, indoor_cycling, road_biking, mountain_biking, etc.
+    if "cycling" in key or "biking" in key:
+        return "cycling"
+    # Catches rowing and indoor_rowing.
+    if "rowing" in key:
+        return "rowing"
     return CATEGORY_MAP.get(key, key)
 
 
@@ -112,17 +118,19 @@ def generate_graph(activities, output_path):
     days = (today - start_of_year).days + 1
     date_range = [start_of_year + timedelta(days=i) for i in range(days)]
 
-    # Top 8 categories by count; anything else is not plotted.
+    # Top 7 categories by count (+ "other" = 8 lines).
     counts = {}
     for a in activities:
         counts[category_of(a)] = counts.get(category_of(a), 0) + 1
-    categories = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:8]]
+    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:7]]
+    categories = top + ["other"]
 
     per_day = {cat: [0.0] * days for cat in categories}
     for a in activities:
         idx = (parse_start(a).date() - start_of_year).days
-        cat = category_of(a)
-        if cat in per_day and 0 <= idx < days:
+        if 0 <= idx < days:
+            cat = category_of(a)
+            cat = cat if cat in top else "other"
             per_day[cat][idx] += (a.get("duration") or 0) / 3600.0
     cumulative = {cat: list(itertools.accumulate(v)) for cat, v in per_day.items()}
 
