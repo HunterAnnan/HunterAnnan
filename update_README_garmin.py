@@ -118,11 +118,11 @@ def generate_graph(activities, output_path):
     days = (today - start_of_year).days + 1
     date_range = [start_of_year + timedelta(days=i) for i in range(days)]
 
-    # Top 7 categories by count (+ "other" = 8 lines).
+    # Top 6 categories by count (+ "other" = 7 lines).
     counts = {}
     for a in activities:
         counts[category_of(a)] = counts.get(category_of(a), 0) + 1
-    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:7]]
+    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:6]]
     categories = top + ["other"]
 
     per_day = {cat: [0.0] * days for cat in categories}
