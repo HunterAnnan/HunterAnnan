@@ -29,8 +29,6 @@ END_TAG = "<!-- GARMIN_STATS:END -->"
 # Garmin typeKey -> chart category. Anything not listed keeps its own typeKey.
 CATEGORY_MAP = {
     "road_biking": "cycling",
-    "walking": "walking_hiking",
-    "hiking": "walking_hiking",
 }
 
 # Chart category / typeKey -> noun used in "My last activity was a ...".
@@ -62,6 +60,9 @@ def parse_start(activity):
 def category_of(activity):
     """Returns the chart category for an activity."""
     key = (activity.get("activityType") or {}).get("typeKey") or "other"
+    # Catches walking, casual_walking, speed_walking, hiking, etc.
+    if "walking" in key or "hiking" in key:
+        return "hiking_walking"
     return CATEGORY_MAP.get(key, key)
 
 
@@ -109,11 +110,11 @@ def generate_graph(activities, output_path):
     days = (today - start_of_year).days + 1
     date_range = [start_of_year + timedelta(days=i) for i in range(days)]
 
-    # Top 4 categories by count; the rest go in "other".
+    # Top 5 categories by count (+ "other" = 6 lines).
     counts = {}
     for a in activities:
         counts[category_of(a)] = counts.get(category_of(a), 0) + 1
-    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:4]]
+    top = [c for c, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:5]]
     categories = top + ["other"]
 
     per_day = {cat: [0.0] * days for cat in categories}
@@ -129,7 +130,7 @@ def generate_graph(activities, output_path):
     fig, ax = plt.subplots(figsize=(16, 6))
     colors = plt.get_cmap("tab10").colors
     for i, cat in enumerate(categories):
-        label = "Walking & Hiking" if cat == "walking_hiking" else cat.replace("_", " ").title()
+        label = "Hiking/Walking" if cat == "hiking_walking" else cat.replace("_", " ").title()
         ax.plot(date_range, cumulative[cat], label=label, color=colors[i % len(colors)], linewidth=2)
     ax.legend(loc="upper left")
     ax.set_ylabel("Cumulative Hours")
