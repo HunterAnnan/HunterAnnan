@@ -45,6 +45,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add README.md *.png
+          git add README.md garmin_stats.png
           git commit -m "Auto-update Garmin stats and graphs" || echo "No changes to commit"
           git push
