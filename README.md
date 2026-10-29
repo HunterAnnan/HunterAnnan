@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-I last did a strength session yesterday.
+I last did a strength session on 27 October 2026.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
