@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-I last went for a run on 29 October 2026.
+I last went for a bike ride yesterday.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
