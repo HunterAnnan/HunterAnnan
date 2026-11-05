@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-I last went for a bike ride on 1 November 2026.
+I last did some indoor rowing yesterday.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
