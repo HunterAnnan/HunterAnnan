@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-I last did a strength session on 10 November 2026.
+I last did some indoor rowing yesterday.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
