@@ -1,7 +1,7 @@
 # Hunter Annan
 
 <!-- GARMIN_STATS:START -->
-I last went for a hike today.
+I last did an indoor cycle yesterday.
 <!-- GARMIN_STATS:END -->
 
 ## Activities I've logged so far this year
